@@ -12,9 +12,9 @@ namespace API.Controllers
         private readonly DataContext _context;
         
         [HttpGet]
-        public async Task<ActionResult<List<Activity>>> GetActivities(CancellationToken ct)
+        public async Task<ActionResult<List<Activity>>> GetActivities()
         {
-            return await Mediator.Send(new List.Query(), ct);
+            return await Mediator.Send(new List.Query());
         }
 
         [HttpGet("{id}")]
@@ -25,13 +25,13 @@ namespace API.Controllers
             });
         }
 
-        // [HttpGet]
-        // public async Task<IActionResult> CreateActivity(Activity activity)
-        // {
-        //     return Ok(await Mediator.Send(new Create.Command{
-        //         Activity = activity
-        //     }));
-        // }
+        [HttpPost]
+        public async Task<IActionResult> CreateActivity(Activity activity)
+        {
+            return Ok(await Mediator.Send(new Create.Command{
+                Activity = activity
+            }));
+        }
         [HttpPut("{id}")]
         public async Task<IActionResult> EditActivty(Guid id, Activity activity)
         {
