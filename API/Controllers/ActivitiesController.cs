@@ -25,12 +25,13 @@ namespace API.Controllers
             });
         }
 
-        public async Task<IActionResult> CreateActivity(Activity activity)
-        {
-            return Ok(await Mediator.Send(new Create.Command{
-                Activity = activity
-            }));
-        }
+        // [HttpGet]
+        // public async Task<IActionResult> CreateActivity(Activity activity)
+        // {
+        //     return Ok(await Mediator.Send(new Create.Command{
+        //         Activity = activity
+        //     }));
+        // }
         [HttpPut("{id}")]
         public async Task<IActionResult> EditActivty(Guid id, Activity activity)
         {
