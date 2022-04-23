@@ -4,7 +4,7 @@ import {
 } from "mobx";
 import agent from "../api/agent";
 import { IActivity } from "../models/IActivity";
-import {v4 as uuid} from 'uuid';
+
 
 export default class ActivitySTore {
   title = "Hello from Mobx!";
@@ -30,9 +30,7 @@ export default class ActivitySTore {
       const activities = await agent.Activities.list();
 
       activities.forEach((act) => {
-        act.date = act.date.split("T")[0];
-        this.activities.push(act);
-        this.activityRegistry.set(act.id,act);
+        this.setActivity(act);
       });
       this.setLoadingInitial(false);
     } catch (error) {
@@ -41,31 +39,45 @@ export default class ActivitySTore {
     }
   };
 
+  loadActivity = async (id: string) => {
+    let activity = this.getActivity(id);
+
+    if(activity) {
+      this.selectedActivity = activity;
+      return activity;
+    } else {
+      this.loadingInitial = true;
+      try {
+        activity = await agent.Activities.details(id);
+        this.setActivity(activity);
+        runInAction(() => {
+          this.selectedActivity = activity;
+        })
+        
+        this.setLoadingInitial(false);
+        return activity;
+      } catch (error) {
+        console.log(error);
+        this.setLoadingInitial(false);
+      }
+    }
+  }
+
+  private getActivity = (id: string) => {
+    return this.activityRegistry.get(id);
+  }
+
+  private setActivity = (activity : IActivity) => {
+    activity.date = activity.date.split("T")[0];
+    this.activityRegistry.set(activity.id,activity);
+  }
+
   setLoadingInitial = (state: boolean) => {
     this.loadingInitial = state;
   };
 
-  selectActivity =(id : string) => {
-      this.selectedActivity = this.activities.find(a => a.id === id);
-      this.activityRegistry.get(id)
-  }
-
-  cancelSelectedActivity = () => {
-      this.selectedActivity = undefined;
-  }
-
-  open = (id? : string) => {
-     id ? this.selectActivity(id) : this.cancelSelectedActivity();
-     this.editMode = true;
-  }
-
-  closeForm = () => {
-      this.editMode = false;
-  }
-
   createActivity = async (activity: IActivity) => {
     this.loading = true;
-    activity.id = uuid();
 
     try {
         await agent.Activities.create(activity);
@@ -107,9 +119,6 @@ export default class ActivitySTore {
 
           runInAction(() => {
             this.activityRegistry.delete(id);
-            if(this.selectedActivity?.id == id) {
-                this.cancelSelectedActivity();
-            }
             this.loading = false;
           })
           
