@@ -55,12 +55,14 @@ namespace API.Controllers
         {
             if (await _userManager.Users.AnyAsync(u => u.Email == registerDto.Email))
             {
-                return BadRequest("Email Taken");
+                ModelState.AddModelError("email", "Email Taken");
+                return ValidationProblem(ModelState);
             }
 
             if (await _userManager.Users.AnyAsync(u => u.UserName == registerDto.UserName))
             {
-                return BadRequest("Username Taken");
+                ModelState.AddModelError("username", "Username Taken");
+                return ValidationProblem("Username Taken");
             }
 
             var user = new AppUser
@@ -68,16 +70,17 @@ namespace API.Controllers
                 DisplayName = registerDto.DisplayName,
                 Email = registerDto.Email,
                 UserName = registerDto.UserName
+                
             };
 
             var result = await _userManager.CreateAsync(user, registerDto.Password);
 
             if (result.Succeeded)
             {
-                CreateUserObject(user);
+                return CreateUserObject(user);
             }
 
-            return BadRequest("Unable To Create User Account");
+            return ValidationProblem("Unable To Create User Account");
         }
 
         [HttpGet]
