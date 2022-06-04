@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
+import { request } from "http";
 import { toast } from "react-toastify";
 import { history } from "../..";
-import { IActivity } from "../models/IActivity";
+import { ActivityFormValues, IActivity } from "../models/IActivity";
 import { User, UserFormValues } from "../models/IUser";
 import { store } from "../stores/store";
 
@@ -73,19 +74,20 @@ const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
 const requests = {
   get: <T>(url: string) => axios.get<T>(url).then(responseBody),
-  post: <T>(url: string, body: {}) =>
-    axios.post<T>(url, body).then(responseBody),
+  post: <T>(url: string, body: {}) => axios.post<T>(url, body).then(responseBody),
   put: <T>(url: string, body: {}) => axios.put<T>(url, body).then(responseBody),
   delete: <T>(url: string) => axios.delete<T>(url).then(responseBody),
+  
 };
 
 const Activities = {
   list: () => requests.get<IActivity[]>("/activities"),
   details: (id: string) => requests.get<IActivity>(`/activities/${id}`),
-  create: (activity: IActivity) => axios.post("/activities", activity),
-  update: (activity: IActivity) =>
+  create: (activity: ActivityFormValues) => axios.post("/activities", activity),
+  update: (activity: ActivityFormValues) =>
     axios.put(`activities/${activity.id}`, activity),
   delete: (id: string) => axios.delete(`/activities/${id}`),
+  attend: (id: string) => requests.post<void>(`/activities/${id}/attend`, {})
 };
 
 const Account = {

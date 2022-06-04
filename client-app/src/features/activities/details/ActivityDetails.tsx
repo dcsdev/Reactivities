@@ -19,6 +19,7 @@ export default observer ( function ActivityDetails() {
     }, [id, loadActivity]);
 
     console.log(`Loading Initial: ${loadingInitial}`);
+    console.log(activity?.attendees!)
     
      if(loadingInitial || !activity) return <LoadingComponent />;
 
@@ -30,7 +31,7 @@ export default observer ( function ActivityDetails() {
                 <ActivityDetailedChat />
             </Grid.Column>
             <Grid.Column width={6}>
-                <ActivityDetailedSideBar />
+                <ActivityDetailedSideBar activity={activity} />
             </Grid.Column>
         </Grid>
     )

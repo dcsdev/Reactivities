@@ -11,22 +11,22 @@ namespace Application.Activities
     {
         public Guid Id { get; set; }
 
-        public string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
 
         public DateTime Date { get; set; }
 
-        public string Description { get; set; }
+        public string Description { get; set; } = String.Empty;
 
-        public string Category { get; set; }
+        public string Category { get; set; } = String.Empty;
 
-        public string City { get; set; }
+        public string City { get; set; } = String.Empty;
 
-        public string Venue { get; set; }
+        public string Venue { get; set; } = String.Empty;
 
-        public string HostUserName { get; set; }
+        public string HostUserName { get; set; } = String.Empty;
 
         public bool IsCancelled { get; set; }
 
-        public ICollection<Profile> Attendees { get; set; }
+        public ICollection<Profile> Attendees { get; set; } = new List<Profile>();
     }
 }

@@ -1,7 +1,7 @@
 import { string } from "yup";
 
 export interface User {
-    username: string;
+    userName: string;
     displayName: string;
     token: string;
     image?: string
