@@ -3,6 +3,7 @@ import { request } from "http";
 import { toast } from "react-toastify";
 import { history } from "../..";
 import { ActivityFormValues, IActivity } from "../models/IActivity";
+import { Profile } from "../models/Iprofile";
 import { User, UserFormValues } from "../models/IUser";
 import { store } from "../stores/store";
 
@@ -96,9 +97,14 @@ const Account = {
     register: (user: UserFormValues) => requests.post<User>('/account/register', user),
 }
 
+const Profiles = {
+  get: (username: string) => requests.get<Profile>(`/profiles/${username}`)
+}
+
 const agent = {
   Activities,
-  Account
+  Account,
+  Profiles
 };
 
 export default agent;
