@@ -3,7 +3,7 @@ import { request } from "http";
 import { toast } from "react-toastify";
 import { history } from "../..";
 import { ActivityFormValues, IActivity } from "../models/IActivity";
-import { Profile } from "../models/Iprofile";
+import { Photo, Profile } from "../models/Iprofile";
 import { User, UserFormValues } from "../models/IUser";
 import { store } from "../stores/store";
 
@@ -98,7 +98,16 @@ const Account = {
 }
 
 const Profiles = {
-  get: (username: string) => requests.get<Profile>(`/profiles/${username}`)
+  get: (username: string) => requests.get<Profile>(`/profiles/${username}`),
+  uploadPhoto: (file: Blob) => {
+    let formData = new  FormData();
+    formData.append('File',file);
+    return axios.post<Photo>('photos', formData, {
+      headers: {'Content-Type': 'multipart/form-data'}
+    })
+  },
+  setMainPhoto: (id: string) => requests.post(`/photos/${id}/setMain`, {}),
+  deletePhoto: (id: string) => requests.delete(`/photos/${id}`)
 }
 
 const agent = {
