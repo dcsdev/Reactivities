@@ -14,6 +14,7 @@ export default class ProfileStore {
     makeAutoObservable(this);
   }
 
+  
   get isCurrentUser() {
     if (store.userStore.user && this.profile) {
       return store.userStore.user.userName === this.profile.username;
@@ -96,6 +97,24 @@ export default class ProfileStore {
       })
     } catch (error) {
       console.log(error);
+      runInAction(() => this.loading = false);
+    }
+  }
+
+  updateProfile = async (profile: Partial<Profile>) => {
+    this.loading = true;
+    debugger;
+    try {
+      await agent.Profiles.updateProfile(profile);
+      runInAction(() => {
+        if(profile.displayName && profile.displayName !== store.userStore.user?.displayName) {
+          store.userStore.seteDisplayName(profile.displayName);
+        }
+
+        this.profile = {...this.profile, ...profile as Profile};
+        this.loading = false;
+      })
+    } catch (error) {
       runInAction(() => this.loading = false);
     }
   }
